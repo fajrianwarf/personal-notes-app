@@ -52,13 +52,19 @@ function getNote(id) {
   return foundedNote;
 }
 
-function getActiveNotes() {
-  const activeNotes = notes.filter((note) => !note.archived);
+function getActiveNotes(keyword = '') {
+  const activeNotes = notes.filter(
+    (note) =>
+      note.title.toLowerCase().includes(keyword.toLowerCase()) && !note.archived
+  );
   return activeNotes;
 }
 
-function getArchivedNotes() {
-  const archivedNotes = notes.filter((note) => note.archived);
+function getArchivedNotes(keyword = '') {
+  const archivedNotes = notes.filter(
+    (note) =>
+      note.title.toLowerCase().includes(keyword.toLowerCase()) && note.archived
+  );
   return archivedNotes;
 }
 
