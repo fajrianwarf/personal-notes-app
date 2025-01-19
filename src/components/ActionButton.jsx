@@ -10,22 +10,20 @@ const actionMap = {
   delete: { icon: <FiTrash />, title: 'Hapus' },
 };
 
-class ActionButton extends React.Component {
-  render() {
-    const { type, onClick } = this.props;
-    const action = actionMap[type] || {};
+function ActionButton(props) {
+  const { type, onClick } = props;
+  const action = actionMap[type] || {};
 
-    return (
-      <button
-        type='button'
-        className='action'
-        title={action.title}
-        onClick={onClick}
-      >
-        {action.icon}
-      </button>
-    );
-  }
+  return (
+    <button
+      type='button'
+      className='action'
+      title={action.title}
+      onClick={onClick}
+    >
+      {action.icon}
+    </button>
+  );
 }
 
 ActionButton.propTypes = {

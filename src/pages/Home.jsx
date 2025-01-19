@@ -16,7 +16,7 @@ function HomePageWrapper() {
 
   const keyword = searchParams.get('keyword');
 
-  function changeKeyword(keyword) {
+  const changeKeyword = (keyword) => {
     setSearchParams({ keyword });
   }
 

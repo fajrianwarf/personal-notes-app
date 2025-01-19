@@ -5,34 +5,22 @@ import { useNavigate } from 'react-router-dom';
 import { addNote } from '../utils/local-data';
 import InputNotes from '../components/InputNotes';
 
-function CreatePageWrapper() {
+function Create() {
   const navigate = useNavigate();
-  return <Create navigate={navigate} />;
-}
-
-class Create extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleSave = this.handleSave.bind(this);
-  }
-
-  handleSave(note) {
+  const handleSave = (note) => {
     addNote(note);
-    this.props.navigate('/');
+    navigate('/');
   }
 
-  render() {
     return (
       <section className='add-new-page'>
-        <InputNotes handleSave={this.handleSave} />
+        <InputNotes handleSave={handleSave} />
       </section>
     );
-  }
 }
 
 Create.propTypes = {
   navigate: PropTypes.func.isRequired,
 };
 
-export default CreatePageWrapper;
+export default Create;

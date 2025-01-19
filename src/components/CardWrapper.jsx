@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class CardWrapper extends React.Component {
-  render() {
-    return <section className='notes-list'>{this.props.children}</section>;
-  }
+function CardWrapper(props) {
+  return <section className='notes-list'>{props.children}</section>;
 }
 
 CardWrapper.propTypes = {
