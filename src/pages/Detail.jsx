@@ -31,22 +31,28 @@ function Detail() {
     fetchNote();
   }, []);
 
-  if (!note) {
+  if (!note && !isLoading) {
     return <NotFound />;
   }
 
   const handleArchive = async () => {
+    setIsLoading(true);
     const { error } = await archiveNote(id);
     if (!error) navigate('/');
+    setIsLoading(false);
   };
 
   const handleUnarchive = async () => {
+    setIsLoading(true);
     const { error } = await unarchiveNote(id);
     if (!error) navigate('/archives');
+    setIsLoading(false);
   };
 
   const handleDelete = async () => {
+    setIsLoading(true);
     const { error } = await deleteNote(id);
+    setIsLoading(false);
     if (!error) {
       if (note.archived) {
         navigate('/archives');
@@ -59,13 +65,13 @@ function Detail() {
   return (
     <section className='detail-page'>
       {isLoading && <PageLoader />}
-      <h3 className='detail-page__title'>{note.title}</h3>
+      <h3 className='detail-page__title'>{note?.title}</h3>
       <p className='detail-page__createdAt'>
-        {showFormattedDate(note.createdAt)}
+        {showFormattedDate(note?.createdAt)}
       </p>
-      <div className='detail-page__body'>{parser(note.body)}</div>
+      <div className='detail-page__body'>{parser(note?.body ?? '')}</div>
       <div className='detail-page__action'>
-        {note.archived ? (
+        {note?.archived ? (
           <ActionButton type='unarchive' onClick={handleUnarchive} />
         ) : (
           <ActionButton type='archive' onClick={handleArchive} />
