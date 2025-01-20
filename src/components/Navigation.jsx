@@ -1,19 +1,48 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth, useTheme, useTranslation } from '../utils/custom-hooks';
+import { IoLanguage } from 'react-icons/io5';
+import { MdLogout, MdNightlight } from 'react-icons/md';
+import { CiLight } from 'react-icons/ci';
+import { putAccessToken } from '../utils';
 
 function Navigation() {
+  const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
+  const { t, toggleLanguage } = useTranslation();
+  const { isAuthenticated, logout, user } = useAuth();
+
+  const handleLogout = () => {
+    putAccessToken('');
+    logout();
+    navigate('login');
+  };
+
   return (
     <header>
       <h1>
-        <Link to='/'>Aplikasi Catatan</Link>
+        <Link to='/'>{t('notesApp')}</Link>
       </h1>
       <nav className='navigation'>
-        <ul>
-          <li>
-            <Link to='/archives'>Arsip</Link>
-          </li>
-        </ul>
+        {isAuthenticated && (
+          <ul>
+            <li>
+              <Link to='/archives'>{t('archived')}</Link>
+            </li>
+          </ul>
+        )}
       </nav>
+      <button className='toggle-locale' onClick={toggleLanguage}>
+        <IoLanguage />
+      </button>
+      <button className='toggle-theme' onClick={toggleTheme}>
+        {theme === 'light' ? <MdNightlight /> : <CiLight />}
+      </button>
+      {isAuthenticated && (
+        <button className='button-logout' onClick={handleLogout}>
+          <MdLogout /> {user.name}
+        </button>
+      )}
     </header>
   );
 }

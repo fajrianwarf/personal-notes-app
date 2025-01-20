@@ -1,56 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ActionButton from './ActionButton';
+import { useInput, useTranslation } from '../utils/custom-hooks';
 
-class InputNotes extends React.Component {
-  constructor(props) {
-    super(props);
+function InputNotes(props) {
+  const { handleSave } = props;
+  const { t } = useTranslation();
+  const [title, onTitleChange] = useInput('');
+  const [body, setBody] = useState('');
 
-    this.state = {
-      title: '',
-      body: '',
-    };
+  const handleChangeBody = (e) => {
+    setBody(e.target.innerHTML);
+  };
 
-    this.handleChangeTitle = this.handleChangeTitle.bind(this);
-    this.handleChangeBody = this.handleChangeBody.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChangeTitle(e) {
-    this.setState({ title: e.target.value });
-  }
-
-  handleChangeBody(e) {
-    this.setState({ body: e.target.innerHTML });
-  }
-
-  handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    this.props.handleSave(this.state);
-  }
+    handleSave({ title, body });
+  };
 
-  render() {
-    return (
-      <div className='add-new-page__input'>
-        <input
-          className='add-new-page__input__title'
-          placeholder='Catatan rahasia'
-          type='text'
-          onChange={this.handleChangeTitle}
-          value={this.state.title}
-        />
-        <div
-          className='add-new-page__input__body'
-          contentEditable
-          data-placeholder='Sebenarnya saya adalah ....'
-          onInput={this.handleChangeBody}
-        />
-        <div className='add-new-page__action'>
-          <ActionButton type='save' onClick={this.handleSubmit} />
-        </div>
+  return (
+    <div className='add-new-page__input'>
+      <input
+        className='add-new-page__input__title'
+        placeholder={t('secretNote')}
+        type='text'
+        onChange={onTitleChange}
+        value={title}
+      />
+      <div
+        className='add-new-page__input__body'
+        contentEditable
+        data-placeholder={t('actuallyIam')}
+        onInput={handleChangeBody}
+      />
+      <div className='add-new-page__action'>
+        <ActionButton type='save' onClick={handleSubmit} />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 InputNotes.propTypes = {

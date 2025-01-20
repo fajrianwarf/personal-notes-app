@@ -4,10 +4,19 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 
 import './styles/style.css';
+import { TranslationProvider } from './context/TranslationContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 
 const root = createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
+  <AuthProvider>
+    <TranslationProvider>
+      <ThemeProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ThemeProvider>
+    </TranslationProvider>
+  </AuthProvider>
 );

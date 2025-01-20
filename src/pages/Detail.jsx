@@ -1,54 +1,71 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import parser from 'html-react-parser';
 
-import {
-  getNote,
-  archiveNote,
-  unarchiveNote,
-  deleteNote,
-} from '../utils/local-data';
-import { showFormattedDate } from '../utils';
 import ActionButton from '../components/ActionButton';
+import PageLoader from '../components/PageLoader';
 import NotFound from './NotFound';
+import {
+  archiveNote,
+  deleteNote,
+  getNote,
+  showFormattedDate,
+  unarchiveNote,
+} from '../utils';
 
 function Detail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const note = getNote(id);
+  const [note, setNote] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchNote = async () => {
+      setIsLoading(true);
+      const { error, data } = await getNote(id);
+      if (!error && data) setNote(data);
+
+      setIsLoading(false);
+    };
+
+    fetchNote();
+  }, []);
 
   if (!note) {
     return <NotFound />;
   }
 
-  const { title, createdAt, body, archived } = note;
-
-  const handleArchive = () => {
-    archiveNote(id);
-    navigate('/');
+  const handleArchive = async () => {
+    const { error } = await archiveNote(id);
+    if (!error) navigate('/');
   };
 
-  const handleUnarchive = () => {
-    unarchiveNote(id);
-    navigate('/archives');
+  const handleUnarchive = async () => {
+    const { error } = await unarchiveNote(id);
+    if (!error) navigate('/archives');
   };
 
-  const handleDelete = () => {
-    deleteNote(id);
-    if (archived) {
-      navigate('/archives');
-    } else {
-      navigate('/');
+  const handleDelete = async () => {
+    const { error } = await deleteNote(id);
+    if (!error) {
+      if (note.archived) {
+        navigate('/archives');
+      } else {
+        navigate('/');
+      }
     }
   };
 
   return (
     <section className='detail-page'>
-      <h3 className='detail-page__title'>{title}</h3>
-      <p className='detail-page__createdAt'>{showFormattedDate(createdAt)}</p>
-      <div className='detail-page__body'>{parser(body)}</div>
+      {isLoading && <PageLoader />}
+      <h3 className='detail-page__title'>{note.title}</h3>
+      <p className='detail-page__createdAt'>
+        {showFormattedDate(note.createdAt)}
+      </p>
+      <div className='detail-page__body'>{parser(note.body)}</div>
       <div className='detail-page__action'>
-        {archived ? (
+        {note.archived ? (
           <ActionButton type='unarchive' onClick={handleUnarchive} />
         ) : (
           <ActionButton type='archive' onClick={handleArchive} />

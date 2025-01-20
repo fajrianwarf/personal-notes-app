@@ -1,77 +1,61 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getArchivedNotes } from '../utils/local-data';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import SearchNotes from '../components/SearchNotes';
 import CardWrapper from '../components/CardWrapper';
+import CardLoader from '../components/CardLoader';
 import EmptyCard from '../components/EmptyCard';
 import Title from '../components/Title';
 import Card from '../components/Card';
+import { useInput, useTranslation } from '../utils/custom-hooks';
+import { getArchivedNotes } from '../utils';
 
-function ArchivePageWrapper() {
+function Archive() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const keywordParam = searchParams.get('keyword');
+  const [notes, setNotes] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [keyword, onKeywordChange] = useInput(keywordParam || '');
 
-  const keyword = searchParams.get('keyword');
+  useEffect(() => {
+    const fetchNotes = async () => {
+      setIsLoading(true);
+      const { error, data } = await getArchivedNotes();
+      if (!error && data) setNotes(data);
 
-  function changeKeyword(keyword) {
-    setSearchParams({ keyword });
-  }
+      setIsLoading(false);
+    };
+
+    fetchNotes();
+  }, []);
+
+  const handleChangeKeyword = (event) => {
+    onKeywordChange(event);
+    setSearchParams({ keyword: event.target.value });
+  };
 
   return (
-    <Archive
-      defaultKeyword={keyword}
-      keywordChange={changeKeyword}
-      navigate={navigate}
-    />
+    <section className='archives-page'>
+      <Title text={t('archivedNotes')} />
+      <SearchNotes value={keyword} onChangeInput={handleChangeKeyword} />
+      {isLoading ? (
+        <CardLoader />
+      ) : notes.length > 0 ? (
+        <CardWrapper>
+          {[...notes]
+            .filter((note) =>
+              note.title.toLowerCase().includes(keyword.toLowerCase())
+            )
+            .map((note) => (
+              <Card key={note.id} {...note} />
+            ))}
+        </CardWrapper>
+      ) : (
+        <EmptyCard />
+      )}
+    </section>
   );
 }
 
-class Archive extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      notes: getArchivedNotes(),
-      keyword: props.defaultKeyword || '',
-    };
-
-    this.handleChangeInput = this.handleChangeInput.bind(this);
-  }
-
-  handleChangeInput(keyword) {
-    this.setState({
-      notes: getArchivedNotes(keyword),
-      keyword,
-    });
-    this.props.keywordChange(keyword);
-  }
-
-  render() {
-    const { keyword, notes } = this.state;
-    return (
-      <section className='archives-page'>
-        <Title text='Catatan Arsip' />
-        <SearchNotes value={keyword} onChangeInput={this.handleChangeInput} />
-        {notes.length > 0 ? (
-          <CardWrapper>
-            {notes.map((note) => (
-              <Card key={note.id} {...note} />
-            ))}
-          </CardWrapper>
-        ) : (
-          <EmptyCard />
-        )}
-      </section>
-    );
-  }
-}
-
-Archive.propTypes = {
-  defaultKeyword: PropTypes.string,
-  navigate: PropTypes.func.isRequired,
-  keywordChange: PropTypes.func.isRequired,
-};
-
-export default ArchivePageWrapper;
+export default Archive;
