@@ -2,7 +2,7 @@ import React, { createContext, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import en from '../locales/EN.json';
 import id from '../locales/ID.json';
-import { getLanguage, putLanguage } from '../utils';
+import { getLanguage, saveLanguageToStorage } from '../utils';
 
 const TranslationContext = createContext();
 
@@ -17,7 +17,7 @@ export const TranslationProvider = ({ children }) => {
   const toggleLanguage = () => {
     const newLang = language === 'en' ? 'id' : 'en';
     setLanguage(newLang);
-    putLanguage(newLang);
+    saveLanguageToStorage(newLang);
   };
 
   const contextValue = useMemo(

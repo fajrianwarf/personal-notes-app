@@ -4,7 +4,7 @@ import { useAuth, useTheme, useTranslation } from '../utils/custom-hooks';
 import { IoLanguage } from 'react-icons/io5';
 import { MdLogout, MdNightlight } from 'react-icons/md';
 import { CiLight } from 'react-icons/ci';
-import { putAccessToken } from '../utils';
+import { saveAccessTokenToStorage } from '../utils';
 
 function Navigation() {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ function Navigation() {
   const { isAuthenticated, logout, user } = useAuth();
 
   const handleLogout = () => {
-    putAccessToken('');
+    saveAccessTokenToStorage('');
     logout();
     navigate('login');
   };

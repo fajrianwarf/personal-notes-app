@@ -1,6 +1,6 @@
 import React, { createContext, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { getTheme, putTheme } from '../utils';
+import { getTheme, saveThemeToStorage } from '../utils';
 
 const ThemeContext = createContext();
 
@@ -10,7 +10,7 @@ export const ThemeProvider = ({ children }) => {
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    putTheme(newTheme);
+    saveThemeToStorage(newTheme);
   };
 
   const contextValue = useMemo(

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import InputLogin from '../components/InputLogin';
 import PageLoader from '../components/PageLoader';
-import { getUserLogged, login, putAccessToken } from '../utils';
+import { getUserLogged, login, saveAccessTokenToStorage } from '../utils';
 import { useAuth, useTranslation } from '../utils/custom-hooks';
 
 function Login() {
@@ -17,7 +17,7 @@ function Login() {
     const { error, data: loginData } = await login(user);
 
     if (!error && loginData.accessToken) {
-      putAccessToken(loginData.accessToken);
+      saveAccessTokenToStorage(loginData.accessToken);
       const { data: userData } = await getUserLogged();
       setUser(userData);
       navigate('/');

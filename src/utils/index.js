@@ -14,7 +14,7 @@ function getAccessToken() {
   return localStorage.getItem('accessToken');
 }
 
-function putAccessToken(accessToken) {
+function saveAccessTokenToStorage(accessToken) {
   return localStorage.setItem('accessToken', accessToken);
 }
 
@@ -22,7 +22,7 @@ function getTheme() {
   return localStorage.getItem('theme');
 }
 
-function putTheme(theme) {
+function saveThemeToStorage(theme) {
   return localStorage.setItem('theme', theme);
 }
 
@@ -30,7 +30,7 @@ function getLanguage() {
   return localStorage.getItem('lang');
 }
 
-function putLanguage(lang) {
+function saveLanguageToStorage(lang) {
   return localStorage.setItem('lang', lang);
 }
 
@@ -189,7 +189,7 @@ async function deleteNote(id) {
 export {
   showFormattedDate,
   getAccessToken,
-  putAccessToken,
+  saveAccessTokenToStorage,
   login,
   register,
   getUserLogged,
@@ -201,7 +201,7 @@ export {
   unarchiveNote,
   deleteNote,
   getTheme,
-  putTheme,
+  saveThemeToStorage,
   getLanguage,
-  putLanguage,
+  saveLanguageToStorage,
 };

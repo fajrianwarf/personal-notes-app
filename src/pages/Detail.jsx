@@ -52,14 +52,12 @@ function Detail() {
   const handleDelete = async () => {
     setIsLoading(true);
     const { error } = await deleteNote(id);
+
+    if (error) return;
     setIsLoading(false);
-    if (!error) {
-      if (note.archived) {
-        navigate('/archives');
-      } else {
-        navigate('/');
-      }
-    }
+
+    const destination = note.archived ? '/archives' : '/';
+    navigate(destination);
   };
 
   return (
